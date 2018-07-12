@@ -5,7 +5,7 @@ extern "C" {
     fn ethereum_getAddress(resultOffset: *const u32);
     fn ethereum_getBalance(addressOffset: *const u32, resultOffset: *const u32);
     fn ethereum_revert(dataOffset: *const u32, length: u32) -> !;
-    fn ethereum_return(dataOffset: *const u32, length: u32) -> !;
+    fn ethereum_return(dataOffset: *const u32, length: u32);
     fn ethereum_callDataCopy(resultOffset: *const u32, dataOffset: u32, length: u32);
     fn ethereum_callDataSize() -> u32;
     fn ethereum_storageLoad(keyOffset: *const u32, resultOffset: *const u32);
@@ -70,16 +70,18 @@ pub fn revert_data(data: Vec<u8>) -> ! {
     }
 }
 
-pub fn finish() -> ! {
+pub fn finish() {
     unsafe {
         ethereum_return(0 as *const u32, 0 as u32);
     }
 }
 
-pub fn finish_data(data: Vec<u8>) -> ! {
+
+pub fn finish_data(data: Vec<u8>){
     unsafe {
         ethereum_return(data.as_ptr() as *const u32, data.len() as u32);
     }
+    return;
 }
 
 pub fn storage_load(key: Vec<u8>) -> Vec<u8> {
